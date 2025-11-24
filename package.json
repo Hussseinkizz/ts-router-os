@@ -1,7 +1,7 @@
 {
   "name": "ts-router-os",
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Hussein Kizz",
@@ -17,7 +17,9 @@
   ],
   "scripts": {
     "build": "bun bun-build.ts && tsc --project tsconfig.build.json",
-    "check": "bunx tsc --noEmit"
+    "check": "bunx tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "repository": {
     "type": "git",
@@ -37,6 +39,7 @@
   "devDependencies": {
     "@types/node": "^24.6.2",
     "bun-types": "^1.3.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "vitest": "^4.0.13"
   }
 }
