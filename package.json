@@ -1,6 +1,5 @@
 {
   "name": "ts-router-os",
-  "private": true,
   "type": "module",
   "version": "0.0.1",
   "main": "dist/index.js",
