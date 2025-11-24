@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "noEmit": false,
+    "outDir": "./dist"
+  },
+  "include": ["index.ts"],
+  "exclude": ["node_modules", "dist", "build", "backup", "**/*.test.ts", "**/*.spec.ts"]
+}
