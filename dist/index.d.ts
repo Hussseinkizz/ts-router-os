@@ -120,9 +120,98 @@ export interface RouterOSClientOptions {
  * ```
  */
 export declare function createRouterOSClient(options: RouterOSClientOptions): {
+    /**
+     * Opens a TCP or TLS socket connection to the RouterOS device.
+     *
+     * Must be called before `login` or any command execution.
+     * Uses the port, SSL, and timeout settings from the client options.
+     *
+     * @returns A Result indicating connection success or failure
+     *
+     * @example
+     * ```ts
+     * const connected = await client.connect();
+     * if (!connected.status) {
+     *   console.error("Failed to connect:", connected.message);
+     *   return;
+     * }
+     * console.log("Connected successfully!");
+     * ```
+     */
     connect: () => Promise<Result<void>>;
+    /**
+     * Authenticates with the RouterOS device using username and password.
+     *
+     * Automatically handles both legacy and challenge-based authentication flows.
+     * The connection must be established via `connect()` before calling this method.
+     * Most RouterOS commands require authentication.
+     *
+     * @param user - RouterOS username (e.g., "admin")
+     * @param password - RouterOS password for the user
+     * @returns A Result indicating authentication success or failure
+     *
+     * @example
+     * ```ts
+     * const auth = await client.login("admin", "mypassword");
+     * if (!auth.status) {
+     *   console.error("Login failed:", auth.message);
+     *   return;
+     * }
+     * console.log("Authenticated successfully!");
+     * ```
+     */
     login: (user: string, password: string) => Promise<Result<void>>;
+    /**
+     * Executes a RouterOS API command and returns the response data.
+     *
+     * This is the core method for interacting with the RouterOS API. Commands use
+     * the RouterOS path format (e.g., `/interface/print`, `/ip/address/add`).
+     *
+     * Parameters are passed as key-value pairs. Keys starting with `?` are used
+     * for filtering/querying. Regular keys are used for setting values.
+     *
+     * @param cmd - The RouterOS API command path (e.g., "/interface/print")
+     * @param params - Key-value pairs for command parameters and filters
+     * @returns A Result containing an array of response objects from RouterOS
+     *
+     * @example
+     * ```ts
+     * // List all interfaces
+     * const interfaces = await client.runCommand("/interface/print");
+     * if (interfaces.status) {
+     *   console.log(interfaces.data); // Array of interface objects
+     * }
+     *
+     * // Add a new IP address
+     * const add = await client.runCommand("/ip/address/add", {
+     *   address: "192.168.1.1/24",
+     *   interface: "ether1"
+     * });
+     *
+     * // Query with filters (keys starting with ?)
+     * const filtered = await client.runCommand("/interface/print", {
+     *   "?type": "ether"
+     * });
+     * ```
+     */
     runCommand: (cmd: string, params?: Record<string, string>) => Promise<Result<RouterOSResponse[]>>;
+    /**
+     * Closes the connection to the RouterOS device and cleans up resources.
+     *
+     * Destroys the underlying socket connection. This method is synchronous
+     * and should be called when you're done using the client.
+     *
+     * @returns A Result indicating whether the close operation succeeded
+     *
+     * @example
+     * ```ts
+     * // When done with the client
+     * const result = client.close();
+     * if (!result.status) {
+     *   console.error("Failed to close connection:", result.message);
+     * }
+     * ```
+     */
     close: () => Result<void>;
     /**
      * Registers an event listener that will be called every time the specified event is emitted.
